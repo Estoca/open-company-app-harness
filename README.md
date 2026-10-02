@@ -36,7 +36,53 @@ Open Company App Harness creates a thin control plane around agent-built apps:
 - a portal for visibility;
 - rules that agents can follow without needing production access.
 
-## Architecture
+## Reference Open Source Stack
+
+The default mental model is a small, self-hosted internal platform built from replaceable open source components.
+
+```mermaid
+flowchart LR
+  Internet[User / Internet] --> Tunnel[Cloudflare Tunnel<br/>cloudflared]
+  Tunnel --> Proxy[Nginx / Nginx Proxy Manager]
+  Proxy --> Auth[Authentik<br/>forward auth / SSO]
+  Auth --> Apps[Internal apps<br/>Docker Compose]
+
+  Apps --> Postgres[(Postgres)]
+  Apps --> Redis[(Redis)]
+  Apps --> Storage[(S3-compatible storage)]
+
+  subgraph Support Plane
+    Gitea[Gitea<br/>Git + Actions]
+    Portainer[Portainer<br/>containers + stacks]
+    Glances[Glances<br/>host observability]
+    Portal[App portal<br/>inventory + deploys + health]
+  end
+
+  Gitea --> Portal
+  Portal --> Apps
+  Portal --> Proxy
+  Portal --> Auth
+  Portal --> Portainer
+  Glances --> Portal
+```
+
+The entry path is intentionally simple:
+
+```text
+cloudflared -> reverse proxy -> auth gateway -> app
+```
+
+The support plane keeps the environment operable:
+
+- Gitea stores repositories and runs GitOps workflows.
+- Portainer gives visibility into containers, images, volumes, and stacks.
+- Glances exposes host-level resource usage.
+- The app portal records app inventory, deploy history, health checks, and drift.
+- Shared services such as Postgres, Redis, and object storage are optional but standardized.
+
+Every box can be swapped. The harness cares about the contracts between them: Git repositories, app manifests, reverse-proxy routes, auth headers, health checks, and deploy events.
+
+## Deployment Control Loop
 
 ```mermaid
 flowchart LR
