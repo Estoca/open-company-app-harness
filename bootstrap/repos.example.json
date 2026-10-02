@@ -1,0 +1,26 @@
+{
+  "repositories": [
+    {
+      "name": "company-app-deploy-requests",
+      "url": "https://git.example.com/platform/company-app-deploy-requests.git",
+      "branch": "main",
+      "required": true,
+      "description": "GitOps repository for first-time deploy requests."
+    },
+    {
+      "name": "company-deploy-platform",
+      "url": "https://git.example.com/platform/company-deploy-platform.git",
+      "branch": "main",
+      "required": true,
+      "description": "Portal/orchestrator for app inventory, deploy events, checks, and health."
+    },
+    {
+      "name": "company-app-template",
+      "url": "https://git.example.com/platform/company-app-template.git",
+      "branch": "main",
+      "required": false,
+      "description": "Optional standalone app template repository."
+    }
+  ]
+}
+

@@ -228,6 +228,7 @@ Start with the docs:
 
 - `docs/architecture.md`
 - `docs/quickstart.md`
+- `docs/llm-bootstrap.md`
 - `docs/app-contract.md`
 - `docs/gitops-flow.md`
 - `docs/security.md`
@@ -236,3 +237,20 @@ Then inspect:
 
 - `templates/app/`
 - `examples/minimal-web-app/`
+
+## Bootstrap With A Terminal-Connected LLM
+
+The repository includes a bootstrap playbook for agents that can use a terminal:
+
+```bash
+cp bootstrap/repos.example.json local/repos.json
+node scripts/bootstrap.mjs --plan --repos=local/repos.json
+```
+
+The script asks for company-specific values, writes an inspectable plan to `local/bootstrap-plan.md`, and defaults to plan mode. It only clones repositories or writes local secret config when run with `--apply`, and it only starts services when `--start` is also provided.
+
+For non-interactive smoke tests:
+
+```bash
+node scripts/bootstrap.mjs --plan --defaults --repos=bootstrap/repos.example.json
+```
