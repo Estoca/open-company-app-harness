@@ -209,6 +209,24 @@ The harness validates that contract, checks the repository, and coordinates depl
 
 Open Company App Harness uses a two-stage deployment model.
 
+### Operational agent on the box
+
+The intended early operating model includes a terminal-connected agent running on, or connected to, the runtime machine.
+
+That agent is useful because first versions of the harness usually still need hands-on operational work:
+
+- inspect the live host, ports, containers, proxy routes, auth providers, and logs;
+- create local `.env` files and runtime directories outside Git;
+- turn an approved deploy request into Docker Compose runtime state;
+- wire proxy and SSO configuration when the orchestrator cannot do it yet;
+- restart or reload only the specific services that the human approved;
+- verify `/health`, auth redirects, deploy records, and container state;
+- report exactly what changed.
+
+The deploy request and merge provide the auditable approval signal. The agent closes the loop on the actual machine until the portal/orchestrator can perform every step automatically.
+
+This is deliberately different from giving every app repository broad production credentials. The agent operates from the runtime environment, uses local service credentials, and follows the harness rules: inspect first, preserve existing state, avoid destructive actions, and ask before changing sensitive infrastructure.
+
 ### First deploy
 
 1. A developer or coding agent creates an app from the template.
@@ -216,7 +234,9 @@ Open Company App Harness uses a two-stage deployment model.
 3. Validation checks run without production secrets.
 4. A deploy request pull request is opened in the GitOps repository.
 5. Review and merge become the approval signal.
-6. The orchestrator creates runtime state, proxy route, auth policy, environment, and health checks.
+6. The workflow records the deploy request with the portal/orchestrator.
+7. The orchestrator, or an approved operational agent connected to the box, creates runtime state, proxy route, auth policy, environment, and health checks.
+8. The agent or orchestrator verifies the deployed app and records the result.
 
 ### Later deploys
 

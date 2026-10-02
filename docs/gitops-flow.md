@@ -31,6 +31,22 @@ Expected events:
 - workflow prints a short status and link;
 - deploy continues asynchronously.
 
+## Runtime Execution
+
+After approval, something with runtime-host access must close the loop.
+
+In a mature harness, the portal/orchestrator performs the deployment directly. In an early harness, a trusted terminal-connected operational agent may do that work from the runtime machine:
+
+- inspect current containers, ports, proxy routes, auth providers, and logs;
+- create ignored local `.env` files and runtime directories;
+- apply the Docker Compose deployment;
+- configure proxy and SSO routes when needed;
+- reload or restart only the approved services;
+- verify health endpoints and auth behavior;
+- update the deploy status with the final result.
+
+This keeps production credentials out of app repositories and pull request checks. The deploy request is still the approval record; the operational agent is the execution mechanism while automation is being completed.
+
 ## Suggested Deploy States
 
 - `queued`
@@ -43,4 +59,3 @@ Expected events:
 - `blocked`
 
 The detailed status should live in the portal. The Git provider should receive a compact summary and a link.
-

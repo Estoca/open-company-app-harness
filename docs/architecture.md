@@ -89,6 +89,25 @@ The portal records:
 
 The portal should compare Git intent with real infrastructure state instead of becoming the only source of truth.
 
+### Operational Agent
+
+In the first practical version of the harness, a terminal-connected coding agent can act as the operational agent for the runtime host.
+
+The operational agent does not replace GitOps approval. It executes the approved change on the machine when the orchestrator is not yet fully automated. Typical responsibilities include:
+
+- reading live host state before making changes;
+- preparing ignored local config and runtime directories;
+- allocating or confirming ports;
+- applying Docker Compose changes;
+- creating or updating reverse proxy routes;
+- creating or updating auth gateway applications and providers;
+- checking container health, HTTP health endpoints, and auth behavior;
+- recording the result back in the portal or deploy request.
+
+This matches the early single-box model: the same machine hosts Git, SSO, proxy, runtime, observability, and the agent workspace, so the agent can compare intended state with real state and fix integration issues quickly.
+
+The boundary is important. The agent should only perform production mutations after an explicit approval signal, and it should never silently delete or overwrite repositories, databases, volumes, proxy routes, auth config, or secrets.
+
 ### Runtime Host
 
 The runtime host is the same single box. It runs Docker Compose apps and local infrastructure integrations, such as:
@@ -120,9 +139,10 @@ Coding agents should read the live rules before preparing a repo. They may edit 
 5. A deploy request PR is opened in the GitOps repository.
 6. CI validates the request without production secrets.
 7. Merge approves the first deploy.
-8. The orchestrator creates or updates runtime state.
-9. Health and deploy status are recorded in the portal.
-10. Future code deploys can happen from the app repo's main branch after the app is onboarded.
+8. The workflow records the deploy request with the portal/orchestrator.
+9. The orchestrator, or an approved operational agent connected to the runtime host, creates or updates runtime state.
+10. Health and deploy status are recorded in the portal.
+11. Future code deploys can happen from the app repo's main branch after the app is onboarded.
 
 ## Why Single Box First
 
