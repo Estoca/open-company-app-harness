@@ -2,6 +2,8 @@
 
 This playbook is for a terminal-connected LLM that needs to recreate a single-box company cloud from scratch.
 
+Read `docs/agent-setup-contract.md` first. That document defines the intended user experience. This playbook is the execution path for that contract.
+
 The goal is not to hide infrastructure behind a magic script. The goal is to give the agent a safe, inspectable path:
 
 1. ask the human for the few decisions that cannot be inferred;

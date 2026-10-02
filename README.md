@@ -61,6 +61,31 @@ That machine runs the control plane, the support plane, and the apps:
 
 This is not meant to replace AWS, Kubernetes, or a mature platform team. It is meant to cover the first, surprisingly large stage where a company needs internal software to be real, authenticated, observable, and repeatable, but does not yet need a distributed platform.
 
+## Target Agent Experience
+
+The intended setup experience is:
+
+```text
+User sends the GitHub repository URL to a terminal-connected LLM.
+The LLM reads the repo, explains the stack, asks for local choices, generates a plan, applies approved steps, starts approved services, verifies health, and leaves the box ready for new app deploys.
+```
+
+The LLM should explain what will be installed before changing the machine:
+
+- tunnel and ingress;
+- reverse proxy;
+- SSO/auth gateway;
+- Git server and automation;
+- Docker Compose runtime;
+- shared Postgres, Redis, and storage options;
+- Portainer and Glances;
+- app portal / orchestrator;
+- templates, schemas, and GitOps deploy flow.
+
+The LLM should ask for values such as admin email, admin username, admin password or permission to generate one, base domain, install directory, tunnel provider, and whether it may start Docker services or create public routes.
+
+See `docs/agent-setup-contract.md` for the full agent-readable contract.
+
 ## Reference Open Source Stack
 
 The default mental model is a small, self-hosted internal platform built from replaceable open source components.
@@ -268,7 +293,9 @@ The key lessons:
 ## Repository Layout
 
 ```text
+AGENTS.md              Agent instructions for terminal-connected LLMs
 docs/                  Architecture, quickstart, GitOps flow, security
+docs/agent-setup-contract.md
 schemas/               JSON schemas for manifests and deploy requests
 templates/app/         Starter files for a deployable internal app
 templates/gitops-request/
@@ -299,6 +326,7 @@ Start with the docs:
 
 - `docs/architecture.md`
 - `docs/quickstart.md`
+- `docs/agent-setup-contract.md`
 - `docs/llm-bootstrap.md`
 - `docs/app-contract.md`
 - `docs/gitops-flow.md`
