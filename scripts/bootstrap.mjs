@@ -107,7 +107,15 @@ function writeLocalConfig(config, adminPassword, plan) {
     `HARNESS_GIT_OWNER=${config.gitOwner}`,
     `HARNESS_INTERNAL_DOMAIN=${config.internalDomain}`,
     `HARNESS_PORTAL_DOMAIN=${config.portalDomain}`,
+    `HARNESS_TUNNEL_PROVIDER=${config.tunnelProvider}`,
+    `HARNESS_REVERSE_PROXY=${config.reverseProxy}`,
     `HARNESS_AUTH_PROVIDER=${config.authProvider}`,
+    `HARNESS_GIT_PROVIDER=${config.gitProvider}`,
+    `HARNESS_CONTAINER_MANAGER=${config.containerManager}`,
+    `HARNESS_HOST_MONITOR=${config.hostMonitor}`,
+    `HARNESS_DATABASE=${config.database}`,
+    `HARNESS_CACHE=${config.cache}`,
+    `HARNESS_OBJECT_STORAGE=${config.objectStorage}`,
     `HARNESS_INITIAL_ADMIN_EMAIL=${config.adminEmail}`,
     `HARNESS_INITIAL_ADMIN_PASSWORD=${adminPassword}`,
     ""
@@ -132,7 +140,15 @@ async function main() {
     gitOwner: "platform",
     internalDomain: "internal.example.com",
     portalDomain: "apps.internal.example.com",
-    authProvider: "forward-auth",
+    tunnelProvider: "cloudflared",
+    reverseProxy: "nginx-proxy-manager",
+    authProvider: "authentik",
+    gitProvider: "gitea",
+    containerManager: "portainer",
+    hostMonitor: "glances",
+    database: "postgres",
+    cache: "redis",
+    objectStorage: "none",
     adminEmail: "admin@example.com"
   };
 
@@ -146,7 +162,15 @@ async function main() {
     config.gitOwner = await question(rl, "Git organization or owner", defaults.gitOwner);
     config.internalDomain = await question(rl, "Internal base domain", defaults.internalDomain);
     config.portalDomain = await question(rl, "Portal domain", defaults.portalDomain);
+    config.tunnelProvider = await question(rl, "Tunnel provider", defaults.tunnelProvider);
+    config.reverseProxy = await question(rl, "Reverse proxy", defaults.reverseProxy);
     config.authProvider = await question(rl, "Auth provider", defaults.authProvider);
+    config.gitProvider = await question(rl, "Git server", defaults.gitProvider);
+    config.containerManager = await question(rl, "Container manager", defaults.containerManager);
+    config.hostMonitor = await question(rl, "Host monitor", defaults.hostMonitor);
+    config.database = await question(rl, "Default database", defaults.database);
+    config.cache = await question(rl, "Default cache", defaults.cache);
+    config.objectStorage = await question(rl, "Object storage", defaults.objectStorage);
     config.adminEmail = await question(rl, "Initial admin email", defaults.adminEmail);
     rl.close();
   }
@@ -159,6 +183,18 @@ async function main() {
     `Repository manifest: ${reposPath}`,
     `Workspace directory: ${config.workspaceDir}`,
     "",
+    "## Single-box cloud",
+    `- Ingress tunnel: ${config.tunnelProvider}`,
+    `- Reverse proxy: ${config.reverseProxy}`,
+    `- Auth gateway: ${config.authProvider}`,
+    `- Git server: ${config.gitProvider}`,
+    `- Container manager: ${config.containerManager}`,
+    `- Host monitor: ${config.hostMonitor}`,
+    `- Default database: ${config.database}`,
+    `- Default cache: ${config.cache}`,
+    `- Object storage: ${config.objectStorage}`,
+    `- Entry path: ${config.tunnelProvider} -> ${config.reverseProxy} -> ${config.authProvider} -> app`,
+    "",
     "## Repositories"
   ];
 
@@ -170,6 +206,7 @@ async function main() {
   plan.push("## Local config");
   plan.push("- Write local/bootstrap.env with machine-local configuration.");
   plan.push("- Write local/bootstrap-plan.md with this plan.");
+  plan.push("- Keep generated config out of Git.");
 
   if (shouldStart) {
     plan.push("");

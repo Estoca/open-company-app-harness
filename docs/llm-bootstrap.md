@@ -1,14 +1,15 @@
 # LLM Bootstrap Playbook
 
-This playbook is for a terminal-connected LLM that needs to recreate a company app harness from scratch.
+This playbook is for a terminal-connected LLM that needs to recreate a single-box company cloud from scratch.
 
 The goal is not to hide infrastructure behind a magic script. The goal is to give the agent a safe, inspectable path:
 
 1. ask the human for the few decisions that cannot be inferred;
 2. clone the platform repositories listed in a manifest;
 3. generate local configuration files that are not committed;
-4. produce an execution plan;
-5. apply only the steps the human explicitly approves.
+4. prepare the core stack around Git, SSO, proxy, observability, and apps;
+5. produce an execution plan;
+6. apply only the steps the human explicitly approves.
 
 ## Agent Rules
 
@@ -46,6 +47,16 @@ The bootstrap script asks for:
 - repository manifest path.
 
 The admin password is written only to local generated files. It must not appear in chat, logs, manifests, or committed files.
+
+The agent should also confirm which core services the human wants on the first box:
+
+- tunnel provider, such as Cloudflare Tunnel;
+- reverse proxy, such as Nginx Proxy Manager;
+- SSO provider, such as Authentik;
+- Git server, such as Gitea;
+- container manager, such as Portainer;
+- host monitor, such as Glances;
+- shared databases, caches, or object storage.
 
 ## Repository Manifest
 
@@ -111,7 +122,11 @@ After a successful bootstrap, the machine should have:
 
 - all required repositories cloned under the chosen workspace directory;
 - local harness configuration generated;
-- a clear next-step plan for starting the portal/orchestrator;
+- a clear next-step plan for starting the single-box cloud services;
+- an ingress path design from tunnel to proxy to auth to app;
+- a Git server plan for harness, apps, and deploy requests;
+- an SSO plan for protecting internal apps;
+- an observability plan for host and containers;
 - a sample app template available;
 - a GitOps repository ready for deploy request files;
 - enough context for the agent to continue setup from repository READMEs.

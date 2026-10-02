@@ -1,24 +1,27 @@
 # Open Company App Harness
 
-A lightweight, open source harness for creating, validating, and deploying internal company apps with coding agents, GitOps, Docker Compose, authentication, and health checks.
+A lightweight, open source blueprint for running a small internal cloud on a single machine: Git, SSO, reverse proxy, databases, observability, app deployment, and coding-agent workflows.
 
-The project is designed for teams that want AI coding agents to build useful internal tools without turning production deployment into a collection of one-off scripts, copied workflows, and undocumented server state.
+The project is designed for teams that want one server to behave like a practical company cloud: a place where code lives, internal apps run, users authenticate, services are observed, and coding agents can safely help operate the environment.
 
-Internal tools are often small enough to build quickly but important enough to require ownership, authentication, repeatable deploys, health checks, and rollback paths. AI coding agents make the first part faster. This harness focuses on the second part: turning agent-built apps into operated software.
+Internal tools are often small enough to build quickly but important enough to need Git, SSO, databases, health checks, backups, auditability, and a clear deployment path. AI coding agents make the building faster. This harness focuses on the system around them: the single-box cloud that turns generated apps into operated software.
 
 ## What This Is
 
-Open Company App Harness is a reference architecture and starter kit for:
+Open Company App Harness is a reference architecture and starter kit for a self-hosted internal platform that includes:
 
-- defining an operational contract for each app with `company-app.yaml`;
-- validating app repositories before deployment;
-- using GitOps for first-time deployment approval;
-- running apps with Docker Compose;
-- integrating with an internal Git server, reverse proxy, auth provider, and app portal;
-- giving coding agents clear rules for how to prepare apps safely;
-- recording deploy history, runtime state, health, and actionable failures.
+- an ingress path from the public internet to private apps;
+- SSO and access policy for internal tools;
+- Git hosting and automation for app repositories;
+- Docker Compose as the default runtime;
+- shared services such as Postgres, Redis, and object storage;
+- container and host observability;
+- an app portal for inventory, deploys, health, and drift;
+- an operational contract for each app with `company-app.yaml`;
+- GitOps approval for first-time app onboarding;
+- coding-agent instructions that let agents build and repair apps without broad production access.
 
-It is not a hosted platform. It is a set of conventions, schemas, templates, and implementation building blocks that a company can adapt to its own infrastructure.
+It is not a hosted platform. It is a set of conventions, schemas, templates, compose files, runbooks, and implementation building blocks that a company can adapt to its own infrastructure.
 
 ## Why It Exists
 
@@ -26,8 +29,13 @@ Coding agents can produce internal apps faster than most teams can safely deploy
 
 Without a harness, each app tends to grow its own deployment script, fixed port, environment variable pattern, auth behavior, and README. That works for one app. It becomes fragile at ten apps and risky at fifty.
 
-Open Company App Harness creates a thin control plane around agent-built apps:
+Open Company App Harness creates a small cloud control plane around one machine:
 
+- a standard ingress route;
+- a default auth layer;
+- local Git as the source of truth;
+- shared runtime services;
+- host and container visibility;
 - a manifest for intent;
 - a template for repeatability;
 - checks for confidence;
@@ -35,6 +43,23 @@ Open Company App Harness creates a thin control plane around agent-built apps:
 - an orchestrator for runtime state;
 - a portal for visibility;
 - rules that agents can follow without needing production access.
+
+## Single-Box Cloud
+
+The central idea is that a single machine can provide the minimum useful shape of a company cloud.
+
+That machine runs the control plane, the support plane, and the apps:
+
+- code is hosted in the same environment through Gitea or another Git server;
+- SSO is handled by Authentik or another identity gateway;
+- public ingress enters through a tunnel and reverse proxy;
+- internal apps run as Docker Compose projects;
+- shared databases and queues run locally when the app does not need managed services;
+- Portainer and Glances make the machine inspectable;
+- an app portal records what should exist, what is running, and what changed;
+- coding agents connect to the same machine and use the same contracts as humans.
+
+This is not meant to replace AWS, Kubernetes, or a mature platform team. It is meant to cover the first, surprisingly large stage where a company needs internal software to be real, authenticated, observable, and repeatable, but does not yet need a distributed platform.
 
 ## Reference Open Source Stack
 
