@@ -20,6 +20,7 @@ Open Company App Harness is a reference architecture and starter kit for a self-
 - an operational contract for each app with `company-app.yaml`;
 - GitOps approval for first-time app onboarding;
 - coding-agent instructions that let agents build and repair apps without broad production access.
+- a live app-building rules pattern that tells agents how this company wants apps created.
 
 It is not a hosted platform. It is a set of conventions, schemas, templates, compose files, runbooks, and implementation building blocks that a company can adapt to its own infrastructure.
 
@@ -85,6 +86,8 @@ The LLM should explain what will be installed before changing the machine:
 The LLM should ask for values such as admin email, admin username, admin password or permission to generate one, base domain, install directory, tunnel provider, and whether it may start Docker services or create public routes.
 
 See `docs/agent-setup-contract.md` for the full agent-readable contract.
+
+The harness should also expose live app-building rules for day-to-day app creation. See `docs/app-rules-example.md` for a generalized example based on a real internal app platform rules file.
 
 ## Reference Open Source Stack
 
@@ -316,6 +319,7 @@ The key lessons:
 AGENTS.md              Agent instructions for terminal-connected LLMs
 docs/                  Architecture, quickstart, GitOps flow, security
 docs/agent-setup-contract.md
+docs/app-rules-example.md
 schemas/               JSON schemas for manifests and deploy requests
 templates/app/         Starter files for a deployable internal app
 templates/gitops-request/
@@ -346,6 +350,7 @@ Start with the docs:
 
 - `docs/architecture.md`
 - `docs/quickstart.md`
+- `docs/app-rules-example.md`
 - `docs/agent-setup-contract.md`
 - `docs/llm-bootstrap.md`
 - `docs/app-contract.md`

@@ -39,7 +39,31 @@ Recommended repositories:
 - `company-app-deploy-requests`: GitOps deploy request repository;
 - one repository per app.
 
-## 4. Prepare the First App
+## 4. Publish Agent-Facing App Rules
+
+Before agents create apps, publish one live rules file that explains the company's current app contract.
+
+Use `docs/app-rules-example.md` as a starting point. Adapt it for:
+
+- supported Git providers;
+- official app template;
+- manifest and Compose requirements;
+- auth provider;
+- shared database/cache/storage policy;
+- CI/deploy workflow;
+- first-deploy GitOps process;
+- actions that require human approval.
+
+The app portal can serve the rules as Markdown and JSON:
+
+```text
+GET /api/agent/rules.md
+GET /api/agent/rules.json
+```
+
+Tell coding agents to read the live rules before copying patterns from existing app repositories.
+
+## 5. Prepare the First App
 
 Copy `templates/app/` into a new app repository and edit:
 
@@ -61,7 +85,7 @@ company-deploy validate ./company-app.yaml
 company-deploy checks ./company-app.yaml
 ```
 
-## 5. Open a Deploy Request
+## 6. Open a Deploy Request
 
 Copy `templates/gitops-request/request.yaml` to the GitOps repository:
 
@@ -71,7 +95,7 @@ requests/example-app.yaml
 
 Open a pull request. The PR should validate schemas and policies, but it should not deploy production.
 
-## 6. Merge to Approve
+## 7. Merge to Approve
 
 Merging the deploy request is the first deploy approval signal.
 
@@ -85,7 +109,7 @@ The orchestrator should create or update:
 - auth policy;
 - health checks.
 
-## 7. Operate The Box
+## 8. Operate The Box
 
 The portal should show:
 
