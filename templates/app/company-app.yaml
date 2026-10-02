@@ -1,0 +1,39 @@
+schema_version: 1
+
+app:
+  slug: example-app
+  name: Example App
+  owner_email: owner@example.com
+  description: Example internal app.
+
+runtime:
+  type: docker-compose
+  compose_file: docker-compose.yml
+  service: app
+  healthcheck:
+    type: http
+    path: /health
+    expected_status: 200
+
+deploy:
+  enabled: true
+  domain: example-app.internal.example.com
+  port: auto
+  env_file: .env
+  env_example: .env.example
+
+auth:
+  required: true
+  provider: forward-auth
+  allowed_domains:
+    - example.com
+
+database:
+  required: false
+  engine: postgres
+  migrations_command: npm run migrate
+
+checks:
+  build_command: docker compose build
+  test_command: npm test
+

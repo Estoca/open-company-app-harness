@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/company-app.schema.json",
+  "title": "Company App Manifest",
+  "type": "object",
+  "required": ["schema_version", "app", "runtime", "deploy"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "app": {
+      "type": "object",
+      "required": ["slug", "name", "owner_email"],
+      "properties": {
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_email": {
+          "type": "string",
+          "format": "email"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["docker-compose", "documentation"]
+        },
+        "compose_file": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "healthcheck": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": ["http"]
+            },
+            "path": {
+              "type": "string"
+            },
+            "expected_status": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 599
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "deploy": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "port": {
+          "oneOf": [
+            { "const": "auto" },
+            { "type": "integer", "minimum": 1, "maximum": 65535 }
+          ]
+        },
+        "env_file": {
+          "type": "string"
+        },
+        "env_example": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "allowed_domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
+
